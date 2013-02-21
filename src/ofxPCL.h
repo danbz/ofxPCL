@@ -1,7 +1,11 @@
 #pragma once
 
-#include "ofMain.h"
+#include "ofUtils.h"
+#include "ofMatrix4x4.h"
+#include "ofVec3f.h"
+#include "ofMesh.h"
 
+#undef Success
 #include "ofxPCLTypes.h"
 #include "ofxPCLUtility.h"
 #include "ofxPCLTree.h"
