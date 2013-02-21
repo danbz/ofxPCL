@@ -2,9 +2,9 @@
 
 #include "ofMain.h"
 
-#include "Types.h"
-#include "Utility.h"
-#include "Tree.h"
+#include "ofxPCLTypes.h"
+#include "ofxPCLUtility.h"
+#include "ofxPCLTree.h"
 
 // file io
 #include <pcl/io/pcd_io.h>
@@ -40,6 +40,9 @@
 // mls
 #include <pcl/surface/mls.h>
 #include <pcl/io/pcd_io.h>
+
+#include <pcl/search/pcl_search.h>
+
 
 namespace ofxPCL
 {
@@ -261,7 +264,7 @@ ofMesh triangulate(const T &cloud_with_normals, float search_radius = 30)
 
 	if (cloud_with_normals->points.empty()) return mesh;
 
-	typename pcl::KdTreeFLANN<typename T::value_type::PointType>::Ptr tree(new pcl::KdTreeFLANN<typename T::value_type::PointType>);
+	typename pcl::search::KdTree<typename T::value_type::PointType>::Ptr tree(new pcl::search::KdTree<typename T::value_type::PointType>);
 	tree->setInputCloud(cloud_with_normals);
 
 	typename pcl::GreedyProjectionTriangulation<typename T::value_type::PointType> gp3;

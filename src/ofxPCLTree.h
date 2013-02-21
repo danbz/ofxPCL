@@ -6,6 +6,8 @@
 // kdtree
 #include <pcl/kdtree/kdtree_flann.h>
 
+#include <pcl/search/pcl_search.h>
+
 namespace ofxPCL
 {
 
@@ -118,7 +120,7 @@ class KdTree
 {
 public:
 
-	typedef pcl::KdTreeFLANN<T> KdTreeType;
+	typedef pcl::search::KdTree<T> KdTreeType;
 	typedef typename KdTreeType::Ptr Ref;
 
 	Ref kdtree;
