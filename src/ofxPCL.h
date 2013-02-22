@@ -55,15 +55,12 @@ namespace ofxPCL
 // file io
 //
 template <typename T>
-inline T loadPointCloud(string path)
+inline void loadPointCloud(string path, T cloud)
 {
-	T cloud(new typename T::value_type);
 	path = ofToDataPath(path);
-
+	
 	if (pcl::io::loadPCDFile<typename T::value_type::PointType>(path.c_str(), *cloud) == -1)
 		ofLogError("Couldn't read file: " + path);
-
-	return cloud;
 }
 
 template <typename T>
