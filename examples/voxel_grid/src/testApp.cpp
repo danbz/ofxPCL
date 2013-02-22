@@ -17,7 +17,6 @@ void testApp::setup()
 	std::cerr << "PointCloud before filtering: " << cloud->width * cloud->height 
 	<< " data points (" << pcl::getFieldsList (*cloud) << ")." << endl;
 	
-	// Create the filtering object
 	ofxPCL::downsample(cloud, ofVec3f(0.01f, 0.01f, 0.01f));
 	
 	std::cerr << "PointCloud after filtering: " << cloud->width * cloud->height 
