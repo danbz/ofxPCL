@@ -224,36 +224,26 @@ inline void normalEstimation(const T1 &cloud, T2 &output_cloud_with_normals)
 // MLS
 //
 template <typename T1, typename T2>
-void movingLeastSquares(const T1 &cloud, T2 &output_cloud_with_normals, float search_radius = 30)
+void movingLeastSquares(const T1 &cloud, T2 &mls_points, float search_radius = 30)
 {
 	if (cloud->points.empty()) return;
-
-	boost::shared_ptr<vector<int> > indices(new vector<int>);
-	indices->resize(cloud->points.size());
-	for (size_t i = 0; i < indices->size(); ++i)
-	{
-		(*indices)[i] = i;
-	}
-
-	pcl::PointCloud<typename T1::value_type::PointType> mls_points;
-	NormalPointCloud mls_normals(new NormalPointCloud::value_type);
-	pcl::MovingLeastSquares<ColorPointType, NormalType> mls;
-
-	KdTree<typename T1::value_type::PointType> kdtree(cloud);
-
+	
+	// Create a KD-Tree
+	typename pcl::search::KdTree<typename T1::value_type::PointType>::Ptr tree (new pcl::search::KdTree<typename T1::value_type::PointType>);
+	
+	// Init object (second point type is for the normals, even if unused)
+	typename pcl::MovingLeastSquares<typename T1::value_type::PointType, typename T2::value_type::PointType> mls;
+	
+	mls.setComputeNormals (true);
+	
 	// Set parameters
-	mls.setInputCloud(cloud);
-	mls.setIndices(indices);
-	mls.setPolynomialFit(true);
-	mls.setSearchMethod(kdtree.kdtree);
-	mls.setSearchRadius(search_radius);
-
+	mls.setInputCloud (cloud);
+	mls.setPolynomialFit (true);
+	mls.setSearchMethod (tree);
+	mls.setSearchRadius (0.03);
+	
 	// Reconstruct
-	mls.setOutputNormals(mls_normals);
-	mls.reconstruct(mls_points);
-
-	output_cloud_with_normals = T2(new typename T2::value_type);
-	pcl::concatenateFields(mls_points, *mls_normals, *output_cloud_with_normals);
+	mls.process (*mls_points);
 }
 
 //
