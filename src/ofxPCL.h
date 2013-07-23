@@ -164,7 +164,8 @@ inline vector<T> segmentation(T cloud, const pcl::SacModel model_type = pcl::SAC
 {
 	assert(cloud);
 	
-	if (cloud->points.empty()) return;
+	vector<T> result;
+	if (cloud->points.empty()) return result;
 
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
 	pcl::PointIndices::Ptr inliers(new pcl::PointIndices());
@@ -181,7 +182,6 @@ inline vector<T> segmentation(T cloud, const pcl::SacModel model_type = pcl::SAC
 	const size_t original_szie = temp->points.size();
 
 	pcl::ExtractIndices<typename T::value_type::PointType> extract;
-	vector<T> result;
 
 	int segment_count = 0;
 	while (temp->size() > original_szie * 0.3)
