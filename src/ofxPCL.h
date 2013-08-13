@@ -230,17 +230,17 @@ inline vector<T> clusterExtraction(T cloud, const pcl::SacModel model_type = pcl
 	if (cloud->points.empty()) return result;
 	
 	// Create the segmentation object for the planar model and set all the parameters
-	pcl::SACSegmentation<pcl::PointXYZ> seg;
+	pcl::SACSegmentation<typename T::value_type::PointType> seg;
 	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
 	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane (new pcl::PointCloud<pcl::PointXYZ> ());
+	T cloud_plane (new typename T::value_type(*cloud));
 	seg.setOptimizeCoefficients (true);
 	seg.setModelType (model_type);
 	seg.setMethodType (pcl::SAC_RANSAC);
 	seg.setMaxIterations (100);
 	seg.setDistanceThreshold (distance_threshold);
 	
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_f (new pcl::PointCloud<pcl::PointXYZ>);
+	T cloud_f (new typename T::value_type(*cloud));
 	
 	int i=0, nr_points = (int) cloud->points.size ();
 	int segment_count = 0;
@@ -256,7 +256,7 @@ inline vector<T> clusterExtraction(T cloud, const pcl::SacModel model_type = pcl
 			break;
 		
 		// Extract the planar inliers from the input cloud
-		pcl::ExtractIndices<pcl::PointXYZ> extract;
+		pcl::ExtractIndices<typename T::value_type::PointType> extract;
 		extract.setInputCloud (cloud);
 		extract.setIndices (inliers);
 		extract.setNegative (false);
@@ -274,21 +274,20 @@ inline vector<T> clusterExtraction(T cloud, const pcl::SacModel model_type = pcl
 	}
 	
 	// Creating the KdTree object for the search method of the extraction
-	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
-	tree->setInputCloud (cloud);
+	KdTree<typename T::value_type::PointType> tree(cloud);
 	
 	std::vector<pcl::PointIndices> cluster_indices;
-	pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+	pcl::EuclideanClusterExtraction<typename T::value_type::PointType> ec;
 	ec.setClusterTolerance (0.02); // 2cm
 	ec.setMinClusterSize (100);
 	ec.setMaxClusterSize (25000);
-	ec.setSearchMethod (tree);
+	ec.setSearchMethod (tree.kdtree);
 	ec.setInputCloud (cloud);
 	ec.extract (cluster_indices);
 	
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
 	{
-		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cluster (new pcl::PointCloud<pcl::PointXYZ>);
+		T cloud_cluster (new typename T::value_type(*cloud));
 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
 			cloud_cluster->points.push_back (cloud->points[*pit]); //*
 		cloud_cluster->width = cloud_cluster->points.size ();
