@@ -1,4 +1,9 @@
-# Setup instruction (OS X)
+# ofxPCL
+
+As file tree is too large, currently, it is not recommended to use the project generator.
+
+
+## Setup instruction (OS X)
 
 1. Get dependencies (96.9 MB) and extract them to ofxPCL folder.
 
@@ -26,3 +31,28 @@
 1. Copy libraries to data folder
 
 		$ python copyfiles.py PATH_TO_YOUR_PROJECT
+
+## Setup instruction (Windows Code::Blocks)
+
+1. Get dependencies (<http://cim.mcgill.ca/~nhieda/dist/ofxpcl_1.7.1_libs_win_cb.zip> 212MB) and extract them to ofxPCL folder.
+
+1. Project -> Add files to add `ofxPCL\src\*` to the project.
+
+1. In Search directories, add
+
+		..\..\..\addons\ofxPCL\libs\pcl\include
+		..\..\..\addons\ofxPCL\libs\pcl\include\eigen3
+		..\..\..\addons\ofxPCL\libs\pcl\include\pcl-1.7
+		..\..\..\addons\ofxPCL\src
+
+1. In Linker settings, add Link libraries:
+
+		pcl_common;pcl_features;pcl_filters;pcl_io;pcl_io_ply;pcl_kdtree;pcl_keypoints;pcl_octree;pcl_recognition;pcl_registration;pcl_sample_consensus;pcl_search;pcl_segmentation;pcl_surface;pcl_tracking;qhull
+
+1. and Other linker options:
+
+		-L..\..\..\addons\ofxPCL\libs\pcl\lib\win_cb
+
+1. In Pre/post build steps, append:
+
+		xcopy /e /i /y "$(PROJECT_DIR)..\..\..\addons\ofxPCL\libs\pcl\bin\win_cb\*.dll"  "$(PROJECT_DIR)bin"
