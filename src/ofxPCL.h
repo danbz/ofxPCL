@@ -35,6 +35,10 @@
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/filters/extract_indices.h>
 
+// cluster extraction
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl/segmentation/extract_clusters.h>
+
 // triangulate
 #include <pcl/features/normal_3d.h>
 #include <pcl/surface/gp3.h>
@@ -164,7 +168,8 @@ inline vector<T> segmentation(T cloud, const pcl::SacModel model_type = pcl::SAC
 {
 	assert(cloud);
 	
-	if (cloud->points.empty()) return;
+	vector<T> result;
+	if (cloud->points.empty()) return result;
 
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
 	pcl::PointIndices::Ptr inliers(new pcl::PointIndices());
@@ -181,7 +186,6 @@ inline vector<T> segmentation(T cloud, const pcl::SacModel model_type = pcl::SAC
 	const size_t original_szie = temp->points.size();
 
 	pcl::ExtractIndices<typename T::value_type::PointType> extract;
-	vector<T> result;
 
 	int segment_count = 0;
 	while (temp->size() > original_szie * 0.3)
@@ -211,6 +215,88 @@ inline vector<T> segmentation(T cloud, const pcl::SacModel model_type = pcl::SAC
 		extract.filter(*temp);
 	}
 
+	return result;
+}
+
+//
+// cluster extraction
+//
+template <typename T>
+inline vector<T> clusterExtraction(T cloud, const pcl::SacModel model_type = pcl::SACMODEL_PLANE, const float distance_threshold = 1, const int min_points_limit = 10, const int max_segment_count = 30)
+{
+	assert(cloud);
+	
+	vector<T> result;
+	if (cloud->points.empty()) return result;
+	
+	// Create the segmentation object for the planar model and set all the parameters
+	pcl::SACSegmentation<typename T::value_type::PointType> seg;
+	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+	T cloud_plane (new typename T::value_type(*cloud));
+	seg.setOptimizeCoefficients (true);
+	seg.setModelType (model_type);
+	seg.setMethodType (pcl::SAC_RANSAC);
+	seg.setMaxIterations (100);
+	seg.setDistanceThreshold (distance_threshold);
+	
+	T cloud_f (new typename T::value_type(*cloud));
+	
+	int i=0, nr_points = (int) cloud->points.size ();
+	int segment_count = 0;
+	while (cloud->points.size () > 0.3 * nr_points)
+	{
+		if (segment_count > max_segment_count) break;
+		
+		// Segment the largest planar component from the remaining cloud
+		seg.setInputCloud (cloud);
+		seg.segment (*inliers, *coefficients);
+		
+		if (inliers->indices.size() < min_points_limit)
+			break;
+		
+		// Extract the planar inliers from the input cloud
+		pcl::ExtractIndices<typename T::value_type::PointType> extract;
+		extract.setInputCloud (cloud);
+		extract.setIndices (inliers);
+		extract.setNegative (false);
+		
+		// Get the points associated with the planar surface
+		extract.filter (*cloud_plane);
+		ofLogNotice() << "PointCloud representing the planar component: " << cloud_plane->points.size () << " data points." << std::endl;
+		
+		// Remove the planar inliers, extract the rest
+		extract.setNegative (true);
+		extract.filter (*cloud_f);
+		*cloud = *cloud_f;
+		
+		segment_count++;
+	}
+	
+	// Creating the KdTree object for the search method of the extraction
+	KdTree<typename T::value_type::PointType> tree(cloud);
+	
+	std::vector<pcl::PointIndices> cluster_indices;
+	pcl::EuclideanClusterExtraction<typename T::value_type::PointType> ec;
+	ec.setClusterTolerance (0.02); // 2cm
+	ec.setMinClusterSize (100);
+	ec.setMaxClusterSize (25000);
+	ec.setSearchMethod (tree.kdtree);
+	ec.setInputCloud (cloud);
+	ec.extract (cluster_indices);
+	
+	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+	{
+		T cloud_cluster (new typename T::value_type(*cloud));
+		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
+			cloud_cluster->points.push_back (cloud->points[*pit]); //*
+		cloud_cluster->width = cloud_cluster->points.size ();
+		cloud_cluster->height = 1;
+		cloud_cluster->is_dense = true;
+		
+		ofLogNotice() << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
+		result.push_back(cloud_cluster);
+	}
 	return result;
 }
 
