@@ -38,7 +38,7 @@ As file tree is too large, currently, it is not recommended to use the project g
 
 1. Project -> Add files to add `ofxPCL\src\*` to the project.
 
-1. In Search directories, add
+1. In Project -> Build options -> Search directories, select the project name on the top left, add following paths (**add above the OpenCV paths when applicable**)
 
 		..\..\..\addons\ofxPCL\libs\pcl\include
 		..\..\..\addons\ofxPCL\libs\pcl\include\eigen3
