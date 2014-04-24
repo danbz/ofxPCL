@@ -1,6 +1,8 @@
 # ofxPCL
 
-As file tree is too large, currently, it is not recommended to use the project generator.
+Windows VS is not supported as PCL does not support latest VS. Linux is not supported yet.
+
+As file tree is too large, currently, it is not recommended to use the project generator, so please follow the instructions below; otherwise, copy `example_empty` to your app directory.
 
 
 ## Setup instruction (OS X)
@@ -26,11 +28,8 @@ As file tree is too large, currently, it is not recommended to use the project g
 		OTHER_LDFLAGS = $(OF_CORE_LIBS) $(OFXPCL_OTHER_LDFLAGS)
 		HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS) $(OFXPCL_HEADER_SEARCH_PATHS)
 
-1. Add ofxPCL/src filder to Xcode project.
+1. Add ofxPCL/src folder to Xcode project.
 
-1. Copy libraries to data folder
-
-		$ python copyfiles.py PATH_TO_YOUR_PROJECT
 
 ## Setup instruction (Windows Code::Blocks)
 
