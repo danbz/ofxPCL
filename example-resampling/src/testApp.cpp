@@ -8,10 +8,10 @@ void testApp::setup()
 {
 	dispRaw = false;
 	
-	ofxPCL::PointCloud cloud(new ofxPCL::PointCloud::element_type);
-	ofxPCL::PointNormalPointCloud mls_points(new ofxPCL::PointNormalPointCloud::element_type);
-
-	cloud = ofxPCL::loadPointCloud<ofxPCL::PointCloud>("bun0.pcd");
+	ofxPCL::PointXYZCloud cloud(new ofxPCL::PointXYZCloud::element_type);
+	ofxPCL::PointNormalCloud mls_points(new ofxPCL::PointNormalCloud::element_type);
+	
+	cloud = ofxPCL::loadPointCloud<ofxPCL::PointXYZCloud>("bun0.pcd");
 	
 	meshraw = ofxPCL::toOF(cloud);
 	
