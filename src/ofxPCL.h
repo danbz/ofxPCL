@@ -164,13 +164,13 @@ inline void radiusOutlierRemoval(T cloud, double radius, int num_min_points)
 // segmentation
 //
 template <typename T>
-vector<T> segmentation(T& cloud, const pcl::SacModel model_type = pcl::SACMODEL_PLANE, const float distance_threshold = 1, const int min_points_limit = 10, const int max_segment_count = 30);
+vector<T> segmentation(T& cloud, pcl::SacModel model_type = pcl::SACMODEL_PLANE, float distance_threshold = 1, int min_points_limit = 10, int max_segment_count = 30);
 
 //
 // cluster extraction
 //
 template <typename T>
-vector<T> clusterExtraction(T& cloud, const pcl::SacModel model_type = pcl::SACMODEL_PLANE, const float distance_threshold = 1, const int min_points_limit = 10, const int max_segment_count = 30);
+vector<T> clusterExtraction(T& cloud, float distance_threshold = 1, int min_points_limit = 10, int max_segment_count = 30);
 
 //
 // normal estimation

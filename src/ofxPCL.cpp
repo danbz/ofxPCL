@@ -69,56 +69,12 @@ PCL_INSTANTIATE(segmentation, PCL_XYZ_POINT_TYPES);
 // cluster extraction
 //
 template <typename T>
-vector<T> clusterExtraction(T &cloud, pcl::SacModel model_type, float distance_threshold, int min_points_limit, int max_segment_count)
+vector<T> clusterExtraction(T &cloud, float distance_threshold, int min_points_limit, int max_segment_count)
 {
 	assert(cloud);
 	
 	vector<T> result;
 	if (cloud->points.empty()) return result;
-	
-	// Create the segmentation object for the planar model and set all the parameters
-	pcl::SACSegmentation<typename T::element_type::PointType> seg;
-	pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-	pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
-	T cloud_plane (new typename T::element_type(*cloud));
-	seg.setOptimizeCoefficients (true);
-	seg.setModelType (model_type);
-	seg.setMethodType (pcl::SAC_RANSAC);
-	seg.setMaxIterations (100);
-	seg.setDistanceThreshold (distance_threshold);
-	
-	T cloud_f (new typename T::element_type(*cloud));
-	
-	int i=0, nr_points = (int) cloud->points.size ();
-	int segment_count = 0;
-	while (cloud->points.size () > 0.3 * nr_points)
-	{
-		if (segment_count > max_segment_count) break;
-		
-		// Segment the largest planar component from the remaining cloud
-		seg.setInputCloud (cloud);
-		seg.segment (*inliers, *coefficients);
-		
-		if (inliers->indices.size() < min_points_limit)
-			break;
-		
-		// Extract the planar inliers from the input cloud
-		pcl::ExtractIndices<typename T::element_type::PointType> extract;
-		extract.setInputCloud (cloud);
-		extract.setIndices (inliers);
-		extract.setNegative (false);
-		
-		// Get the points associated with the planar surface
-		extract.filter (*cloud_plane);
-		ofLogNotice() << "PointCloud representing the planar component: " << cloud_plane->points.size () << " data points." << std::endl;
-		
-		// Remove the planar inliers, extract the rest
-		extract.setNegative (true);
-		extract.filter (*cloud_f);
-		*cloud = *cloud_f;
-		
-		segment_count++;
-	}
 	
 	// Creating the KdTree object for the search method of the extraction
 	KdTree<typename T::element_type::PointType> tree(cloud);
@@ -132,23 +88,27 @@ vector<T> clusterExtraction(T &cloud, pcl::SacModel model_type, float distance_t
 	ec.setInputCloud (cloud);
 	ec.extract (cluster_indices);
 	
+	int segment_count = 0;
 	for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
 	{
-		T cloud_cluster (new typename T::element_type(*cloud));
+		if( segment_count >= max_segment_count ) break;
+		
+		T cloud_cluster (new typename T::element_type);
 		for (std::vector<int>::const_iterator pit = it->indices.begin (); pit != it->indices.end (); pit++)
 			cloud_cluster->points.push_back (cloud->points[*pit]); //*
 		cloud_cluster->width = cloud_cluster->points.size ();
 		cloud_cluster->height = 1;
 		cloud_cluster->is_dense = true;
 		
-		ofLogNotice() << "PointCloud representing the Cluster: " << cloud_cluster->points.size () << " data points." << std::endl;
 		result.push_back(cloud_cluster);
+		
+		segment_count++;
 	}
 	return result;
 }
 
 #define PCL_INSTANTIATE_clusterExtraction(T) \
-	template vector<pcl::PointCloud<T>::Ptr> clusterExtraction(pcl::PointCloud<T>::Ptr&, pcl::SacModel, float, int, int);
+	template vector<pcl::PointCloud<T>::Ptr> clusterExtraction(pcl::PointCloud<T>::Ptr&, float, int, int);
 PCL_INSTANTIATE(clusterExtraction, PCL_XYZ_POINT_TYPES);
 
 template <typename T>
