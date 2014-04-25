@@ -362,49 +362,10 @@ void movingLeastSquares(const T1 &cloud, T2 &output_cloud_with_normals, float se
 // triangulate
 //
 template <typename T>
-ofMesh triangulate(const T &cloud_with_normals, float search_radius = 30)
-{
-	assert(cloud_with_normals);
-	
-	ofMesh mesh;
-	
-	if (cloud_with_normals->points.empty()) return mesh;
-	
-	KdTree<typename T::element_type::PointType> kdtree(cloud_with_normals);
-
-	typename pcl::GreedyProjectionTriangulation<typename T::element_type::PointType> gp3;
-	pcl::PolygonMesh triangles;
-
-	// Set the maximum distance between connected points (maximum edge length)
-	gp3.setSearchRadius(search_radius);
-
-	gp3.setMu(2.5);
-	gp3.setMaximumNearestNeighbors(20);
-	gp3.setMaximumSurfaceAngle(ofDegToRad(90));
-	gp3.setMinimumAngle(ofDegToRad(10));
-	gp3.setMaximumAngle(ofDegToRad(180));
-	gp3.setNormalConsistency(false);
-    gp3.setConsistentVertexOrdering(true);
-
-	gp3.setInputCloud(cloud_with_normals);
-	gp3.setSearchMethod(kdtree.kdtree);
-	gp3.reconstruct(triangles);
-
-	convert(cloud_with_normals, mesh);
-
-	for (int i = 0; i < triangles.polygons.size(); i++)
-	{
-		pcl::Vertices &v = triangles.polygons[i];
-
-		if (v.vertices.size() == 3)
-			mesh.addTriangle(v.vertices[0], v.vertices[1], v.vertices[2]);
-	}
-
-	return mesh;
-}
+ofMesh triangulate(const T &cloud_with_normals, float search_radius = 30);
 
 //
-// GridProjection # dosen't work...?
+// GridProjection # doesn't work...?
 //
 template <typename T>
 ofMesh gridProjection(const T &cloud_with_normals, float resolution = 1, int padding_size = 3)
