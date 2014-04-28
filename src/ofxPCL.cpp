@@ -7,7 +7,7 @@ namespace ofxPCL
 {
 
 template <typename T>
-vector<T> segmentation(T &cloud, pcl::SacModel model_type, float distance_threshold, int min_points_limit, int max_segment_count)
+vector<T> segmentation(T &cloud, pcl::SacModel model_type, float distance_threshold, int min_points_limit, int max_segment_count, bool makeCloudResidual)
 {
 	assert(cloud);
 	
@@ -58,11 +58,15 @@ vector<T> segmentation(T &cloud, pcl::SacModel model_type, float distance_thresh
 		extract.filter(*temp);
 	}
 	
+	if( makeCloudResidual ) {
+		cloud = temp;
+	}
+	
 	return result;
 }
 
 #define PCL_INSTANTIATE_segmentation(T) \
-	template vector<pcl::PointCloud<T>::Ptr> segmentation(pcl::PointCloud<T>::Ptr&, pcl::SacModel, float, int, int);
+	template vector<pcl::PointCloud<T>::Ptr> segmentation(pcl::PointCloud<T>::Ptr&, pcl::SacModel, float, int, int, bool);
 PCL_INSTANTIATE(segmentation, PCL_XYZ_POINT_TYPES);
 
 //
