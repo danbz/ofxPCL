@@ -159,7 +159,9 @@ ofMesh triangulate(const T &cloud_with_normals, float search_radius)
 
 #define PCL_INSTANTIATE_triangulate(T) \
 	template ofMesh triangulate<pcl::PointCloud<T>::Ptr>(const pcl::PointCloud<T>::Ptr&, float);
-PCL_INSTANTIATE(triangulate, PCL_NORMAL_POINT_TYPES);
+PCL_INSTANTIATE(triangulate, (pcl::PointNormal) \
+	(pcl::PointXYZRGBNormal) \
+	(pcl::PointXYZINormal));
 
 ofMesh organizedFastMesh(const ofShortPixels& depthImage, const int skip, float scale)
 {
