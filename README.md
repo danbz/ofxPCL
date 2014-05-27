@@ -1,6 +1,6 @@
 # ofxPCL
 
-Windows VS is not supported as PCL does not support latest VS. Linux is not supported yet.
+Windows VS is not supported as PCL does not support latest VS.
 
 As file tree is too large, currently, it is not recommended to use the project generator, so please follow the instructions below; otherwise, copy `example_empty` to your app directory.
 
@@ -55,3 +55,40 @@ As file tree is too large, currently, it is not recommended to use the project g
 1. In Pre/post build steps, append:
 
 		xcopy /e /i /y "$(PROJECT_DIR)..\..\..\addons\ofxPCL\libs\pcl\bin\win_cb\*.dll"  "$(PROJECT_DIR)bin"
+
+
+## Setup instruction (Ubuntu)
+
+1. Get dependencies by apt-get
+
+		sudo apt-get install libboost-all-dev
+		sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
+		sudo apt-get update
+		sudo apt-get install libpcl-all
+
+1. Add ofxPCL to the project **using projectGenerator**.
+
+1. Add the following lines to Makefile before "call the project makefile":
+
+		PROJECT_ADDONS_INCLUDES += /usr/include/pcl-1.7/
+		PROJECT_ADDONS_INCLUDES += /usr/include/eigen3/
+		PROJECT_ADDONS_LDFLAGS += -lboost_date_time
+		PROJECT_ADDONS_LDFLAGS += -lboost_filesystem
+		PROJECT_ADDONS_LDFLAGS += -lboost_iostreams
+		PROJECT_ADDONS_LDFLAGS += -lboost_system
+		PROJECT_ADDONS_LDFLAGS += -lboost_thread
+		PROJECT_ADDONS_LDFLAGS += -lpcl_common
+		PROJECT_ADDONS_LDFLAGS += -lpcl_features
+		PROJECT_ADDONS_LDFLAGS += -lpcl_filters
+		PROJECT_ADDONS_LDFLAGS += -lpcl_io
+		PROJECT_ADDONS_LDFLAGS += -lpcl_io_ply
+		PROJECT_ADDONS_LDFLAGS += -lpcl_kdtree
+		PROJECT_ADDONS_LDFLAGS += -lpcl_keypoints
+		PROJECT_ADDONS_LDFLAGS += -lpcl_octree
+		PROJECT_ADDONS_LDFLAGS += -lpcl_recognition
+		PROJECT_ADDONS_LDFLAGS += -lpcl_registration
+		PROJECT_ADDONS_LDFLAGS += -lpcl_sample_consensus
+		PROJECT_ADDONS_LDFLAGS += -lpcl_search
+		PROJECT_ADDONS_LDFLAGS += -lpcl_segmentation
+		PROJECT_ADDONS_LDFLAGS += -lpcl_surface
+		PROJECT_ADDONS_LDFLAGS += -lpcl_tracking

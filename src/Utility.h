@@ -2,6 +2,10 @@
 
 #include "ofMain.h"
 
+#ifdef Success
+#undef Success
+#endif
+
 #include "Types.h"
 
 #include <pcl/common/io.h>

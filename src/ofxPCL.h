@@ -1,9 +1,21 @@
 #pragma once
 
+#ifdef nil
+#undef nil
+#endif
+
+#ifdef Success
+#undef Success
+#endif
+
 #include "ofMain.h"
 
 #ifdef nil
 #undef nil
+#endif
+
+#ifdef Success
+#undef Success
 #endif
 
 #include "Types.h"
