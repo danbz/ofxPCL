@@ -28,7 +28,10 @@ As file tree is too large, currently, it is not recommended to use the project g
 		OTHER_LDFLAGS = $(OF_CORE_LIBS) $(OFXPCL_OTHER_LDFLAGS)
 		HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS) $(OFXPCL_HEADER_SEARCH_PATHS)
 
-1. Add ofxPCL/src folder to Xcode project.
+1. Add `$(OFXPCL_HEADER_SEARCH_PATHS)` to Build Settings -> Search Paths -> Header Search Paths **(add above the OpenCV paths when applicable)**
+
+
+1. Add `ofxPCL/src` folder to Xcode project.
 
 
 ## Setup instruction (Windows Code::Blocks)
