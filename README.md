@@ -31,6 +31,9 @@ As file tree is too large, currently, it is not recommended to use the project g
 1. Add `$(OFXPCL_HEADER_SEARCH_PATHS)` to Build Settings -> Search Paths -> Header Search Paths **(add above the OpenCV paths when applicable)**
 
 
+1. Add `$(OFXPCL_OTHER_LDFLAGS)` to Build Settings -> Linking -> Other Linker Flags
+
+
 1. Add `ofxPCL/src` folder to Xcode project.
 
 
