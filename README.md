@@ -15,29 +15,30 @@ https://app.box.com/s/gdxfvpeuc23wjqk4utb5fn1hc34o3ivu
 3. 
 In Property Pages > C/C++ > Additional Include Directories add
 
-..\..\..\addons\ofxPCL\libs\pcl\include\;
-..\..\..\addons\ofxPCL\libs\pcl\include\eigen3;
-..\..\..\addons\ofxPCL\libs\pcl\include\pcl-1.7;
-..\..\..\addons\ofxPCL\src;
+		..\..\..\addons\ofxPCL\libs\pcl\include\;
+		..\..\..\addons\ofxPCL\libs\pcl\include\eigen3;
+		..\..\..\addons\ofxPCL\libs\pcl\include\pcl-1.7;
+		..\..\..\addons\ofxPCL\src;
 
 4.
-In Property Pages > Linker add ..\..\..\addons\ofxPCL\libs\pcl\lib\vs;
+In Property Pages > Linker add 	
+		..\..\..\addons\ofxPCL\libs\pcl\lib\vs;
 
 5.
 In Property Pages > C/C++ > Preprocessor add
-BOOST_ALL_DYN_LINK;
+		BOOST_ALL_DYN_LINK;
 
 6. Select Configuration Debug
 In Property Pages > Linker > Input > Additional Dependencies add
-pcl_common_debug.lib;pcl_features_debug.lib;pcl_filters_debug.lib;pcl_io_debug.lib;pcl_io_ply_debug.lib;pcl_kdtree_debug.lib;pcl_keypoints_debug.lib;pcl_octree_debug.lib;pcl_recognition_debug.lib;pcl_registration_debug.lib;pcl_sample_consensus_debug.lib;pcl_search_debug.lib;pcl_segmentation_debug.lib;pcl_surface_debug.lib;pcl_tracking_debug.lib;qhull.lib;
+		pcl_common_debug.lib;pcl_features_debug.lib;pcl_filters_debug.lib;pcl_io_debug.lib;pcl_io_ply_debug.lib;pcl_kdtree_debug.lib;pcl_keypoints_debug.lib;pcl_octree_debug.lib;pcl_recognition_debug.lib;pcl_registration_debug.lib;pcl_sample_consensus_debug.lib;pcl_search_debug.lib;pcl_segmentation_debug.lib;pcl_surface_debug.lib;pcl_tracking_debug.lib;qhull.lib;
 
 Select Configuration Release
 In Property Pages > Linker > Input > Additional Dependencies add
-pcl_common_release.lib;pcl_features_release.lib;pcl_filters_release.lib;pcl_io_release.lib;pcl_io_ply_release.lib;pcl_kdtree_release.lib;pcl_keypoints_release.lib;pcl_octree_release.lib;pcl_recognition_release.lib;pcl_registration_release.lib;pcl_sample_consensus_release.lib;pcl_search_release.lib;pcl_segmentation_release.lib;pcl_surface_release.lib;pcl_tracking_release.lib;qhull.lib;
+		pcl_common_release.lib;pcl_features_release.lib;pcl_filters_release.lib;pcl_io_release.lib;pcl_io_ply_release.lib;pcl_kdtree_release.lib;pcl_keypoints_release.lib;pcl_octree_release.lib;pcl_recognition_release.lib;pcl_registration_release.lib;pcl_sample_consensus_release.lib;pcl_search_release.lib;pcl_segmentation_release.lib;pcl_surface_release.lib;pcl_tracking_release.lib;qhull.lib;
 
 7.
-xcopy /e /i /y "$(PROJECT_DIR)..\..\..\addons\ofxPCL\libs\pcl\bin\vs\*.dll" "$(PROJECT_DIR)bin"
-xcopy /e /i /y "$(ProjectDir)..\..\..\export\vs\*.dll" "$(ProjectDir)bin"
+		xcopy /e /i /y "$(PROJECT_DIR)..\..\..\addons\ofxPCL\libs\pcl\bin\vs\*.dll" "$(PROJECT_DIR)bin"
+		xcopy /e /i /y "$(ProjectDir)..\..\..\export\vs\*.dll" "$(ProjectDir)bin"
 
 
 ## Setup instruction (OS X)
