@@ -116,7 +116,7 @@ vector<T> clusterExtraction(T &cloud, float distance_threshold, int min_points_l
 PCL_INSTANTIATE(clusterExtraction, PCL_XYZ_POINT_TYPES);
 
 template <typename T>
-ofMesh triangulate(const T &cloud_with_normals, float search_radius)
+ofMesh triangulate(const T &cloud_with_normals, float search_radius, float mu, float maxNearNeighbors, float maxSurfaceAngle, float minAngle, float maxAngle, bool normalConsistency, bool consistentVertexOrdering)
 {
 	assert(cloud_with_normals);
 	
@@ -132,13 +132,13 @@ ofMesh triangulate(const T &cloud_with_normals, float search_radius)
 	// Set the maximum distance between connected points (maximum edge length)
 	gp3.setSearchRadius(search_radius);
 	
-	gp3.setMu(2.5);
-	gp3.setMaximumNearestNeighbors(20);
-	gp3.setMaximumSurfaceAngle(ofDegToRad(90));
-	gp3.setMinimumAngle(ofDegToRad(10));
-	gp3.setMaximumAngle(ofDegToRad(180));
-	gp3.setNormalConsistency(false);
-	gp3.setConsistentVertexOrdering(true);
+	gp3.setMu(mu);
+	gp3.setMaximumNearestNeighbors(maxNearNeighbors);
+	gp3.setMaximumSurfaceAngle(ofDegToRad(maxSurfaceAngle));
+	gp3.setMinimumAngle(ofDegToRad(minAngle));
+	gp3.setMaximumAngle(ofDegToRad(maxAngle));
+	gp3.setNormalConsistency(normalConsistency);
+	gp3.setConsistentVertexOrdering(consistentVertexOrdering);
 	
 	gp3.setInputCloud(cloud_with_normals);
 	gp3.setSearchMethod(kdtree.kdtree);
@@ -158,7 +158,7 @@ ofMesh triangulate(const T &cloud_with_normals, float search_radius)
 }
 
 #define PCL_INSTANTIATE_triangulate(T) \
-	template ofMesh triangulate<pcl::PointCloud<T>::Ptr>(const pcl::PointCloud<T>::Ptr&, float);
+	template ofMesh triangulate<pcl::PointCloud<T>::Ptr>(const pcl::PointCloud<T>::Ptr&, float, float, float, float, float, float, bool, bool);
 PCL_INSTANTIATE(triangulate, (pcl::PointNormal) \
 	(pcl::PointXYZRGBNormal) \
 	(pcl::PointXYZINormal));

@@ -246,7 +246,7 @@ void movingLeastSquares(const T1 &cloud, T2 &output_cloud_with_normals, float se
 // triangulate
 //
 template <typename T>
-ofMesh triangulate(const T &cloud_with_normals, float search_radius = 30);
+ofMesh triangulate(const T &cloud_with_normals, float search_radius = 30, float mu=2.5, float maxNearNeighbors=25, float maxSurfaceAngle=90, float minAng =10, float maxAng=180, bool normalConsistency=false, bool consistentVertexOrdering=true);
 
 //
 // GridProjection # doesn't work...?
