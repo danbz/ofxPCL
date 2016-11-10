@@ -265,6 +265,36 @@ inline void convert(const vector<ofVec3f> &points,
 }
 
 inline void convert(const vector<ofVec3f> &points,
+					const vector<ofVec2f> &uvs,
+					PointXYZRGBCloud &cloud)
+{
+	if (!cloud)
+		cloud = New<PointXYZRGBCloud>();
+
+	const size_t num_point = points.size();
+
+	cloud->width = num_point;
+	cloud->height = 1;
+	cloud->points.resize(cloud->width * cloud->height);
+
+	if (points.empty()) return;
+	if (uvs.empty()) return;
+
+	for (int i = 0; i < num_point; i++)
+	{
+		PointXYZRGB &p = cloud->points[i];
+		const ofVec3f &o = points[i];
+		const ofVec2f &uv = uvs[i];
+		p.x = o.x;
+		p.y = o.y;
+		p.z = o.z;
+		p.r = uv.x*255;
+		p.g = uv.y*255;
+		p.b = 0;
+	}
+}
+
+inline void convert(const vector<ofVec3f> &points,
 					const vector<ofFloatColor> &colors,
 					const vector<ofVec3f> &normals,
 					PointXYZRGBNormalCloud &cloud)
