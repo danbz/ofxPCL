@@ -12,6 +12,7 @@ xcuserdata
 DerivedData
 
 bin/
+!libs/pcl1.7/bin
 obj/
 
 # ofxPCL
